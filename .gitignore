@@ -3,3 +3,7 @@
 .in_use
 _workspace/
 _workspace_*/
+.claude/settings.local.json
+.claude/.session-start
+.bkit-memory.json
+.pdca-status.json

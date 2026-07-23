@@ -49,9 +49,12 @@ Phase 0 현황 감사 → Phase 1 도메인 분석
 - 상세·도메인별 seam 카탈로그: `references/seam-discovery.md`.
 
 ### HE: 팀 구성 (에이전트·스킬·오케스트레이터)
-seam 오너십을 바탕으로 팀을 만든다. **모든 에이전트는 `대상/.claude/agents/{name}.md` 파일로 정의**(빌트인 타입이라도), `model: "opus"`. 각 에이전트는 담당 seam의 소유자이자 하나의 스킬(들)을 쓴다.
-- 실행 모드는 에이전트 팀이 기본(2+ 협업). 패턴·정의 템플릿·오케스트레이터 템플릿: `references/harness-engineering.md`.
+seam 오너십을 바탕으로 팀을 만든다. **모든 에이전트는 `대상/.claude/agents/{name}.md` 파일로 정의**(빌트인 타입이라도), `model: "opus"`. 각 에이전트는 담당 seam의 소유자이자 하나의 스킬(들)을 쓴다. seam마다 소유자는 **정확히 1명**(둘이 나눠 가지면 SoT가 깨진다).
+- 정의 템플릿·오너십 규칙: `references/harness-engineering.md`
+- 실행 모드(팀/서브/하이브리드)·데이터 전달·에러 핸들링: `references/execution-modes.md`
+- 스킬 작성(description·본문·중복 검토): `references/skill-authoring.md`
 - 오케스트레이터 스킬 1개가 팀을 조율하고, 완료 시 **정본을 채우고 design은 링크만** 하도록 명시한다.
+- **QA 에이전트를 팀에 포함한다** — 정본을 정답지로 구현을 대조하는 역할. seam을 소유하지 않는다: `references/seam-qa.md`
 
 ### P-C: 계약 시드 (CE, seam-only)
 P-B의 seam마다 `대상/docs/context/{seam}.md` 정본 1개를 만든다.
@@ -80,18 +83,27 @@ HE와 CE를 연결한다.
 - (옵션) **Stop 훅**으로 PROGRESS 갱신 강제: `scripts/session-start-stamp.sh` + `scripts/progress-stop-check.sh` + `assets/settings-hooks.snippet.json`을 설치. 상세: `references/progress-and-hooks.md`.
 
 ### Phase 8: 검증
-구조 검증(파일 위치·frontmatter·커맨드 미생성), 정본 무결성(seam-only 배너, design 링크, drift 없음), 트리거 검증(should/should-NOT), 드라이런(데이터 흐름 dead link 없음). 상세: `references/verification.md`.
+싼 것부터: 구조 → 정본 무결성 → 트리거 → 드라이런 → 실행 테스트 → **Seam QA**. 상세: `references/verification.md`.
+- 트리거·실행 테스트(with/without 비교, near-miss 작성): `references/skill-testing.md`
+- **Seam QA** — 정본을 assertion으로 전개해 구현과 대조하고 **V(구현 위반)/G(계약 공백)/S(정본 노후)로 판정**한다. "다름"에서 멈추지 않는 것이 핵심: `references/seam-qa.md`
 
 ### Phase 9: 진화
 실행 후 피드백 수집 → 유형별 반영(품질=스킬, 역할=에이전트, 순서=오케스트레이터, 계약=정본). 모든 변경은 CLAUDE.md/README 변경 이력에 기록. **CE-우선 원칙에 따라 계약 변경은 항상 정본부터.**
+- 재실행 판별(초기/부분/새/CE 재실행)·확장 시 Phase 선택·drift 감사: `references/re-execution.md`
+- **계약이 바뀌면 소비자 전원이 대상이다.** 한 명만 반영하면 그 자체가 경계면 버그다.
 
 ## 산출물 체크리스트
 - [ ] `docs/context/plan-extracts/` (입력 문서가 있을 때)
 - [ ] `docs/context/{seam}.md` 정본들 — **seam-only 배너 + [정본]/[TODO]/[OPEN] 표기**
 - [ ] `docs/context/{glossary,fr-index,open-decisions}.md`
-- [ ] `docs/context/README.md` — SoT + Context/Design 경계 + CE-우선 변경 프로토콜 + 변경 이력
-- [ ] `.claude/agents/*.md` — seam 소유자로 정의, 모두 `model: opus`
+- [ ] `docs/context/README.md` — SoT + Context/Design 경계 + CE-우선 변경 프로토콜 + **오너십 맵** + 변경 이력
+- [ ] `.claude/agents/*.md` — seam 소유자로 정의, 모두 `model: opus`, "재호출 시" 지침 포함
+- [ ] **모든 seam에 소유자 정확히 1명 + 소비자 1명 이상** (고아 정본·유령 seam 없음)
 - [ ] `.claude/skills/*/SKILL.md` — "컨텍스트 자산 참조" 포함, 오케스트레이터 1개
+- [ ] **QA 에이전트 존재** — `general-purpose`, seam 미소유, 계약 수정 권한 없음
+- [ ] 오케스트레이터에 **실행 모드 명시** + Phase 0 컨텍스트 확인 + description에 후속 작업 키워드
+- [ ] 트리거 검증 완료 — should / should-NOT(near-miss, 인접 seam 위주)
+- [ ] **Seam QA 1회 이상 수행**, 판정(V/G/S)과 조치 기록
 - [ ] `PROGRESS.md` — 내러티브+포인터
 - [ ] `CLAUDE.md` — 하네스·컨텍스트·변경 프로토콜 포인터
 - [ ] (옵션) Stop 훅 설치
@@ -99,6 +111,8 @@ HE와 CE를 연결한다.
 - [ ] **P-B(Seam 발견)가 HE보다 먼저 수행됨**
 
 ## 참조
-- `references/phase-input-curation.md` · `references/seam-discovery.md` · `references/harness-engineering.md`
-- `references/governance.md` · `references/progress-and-hooks.md` · `references/verification.md`
-- 템플릿: `assets/` · 도구: `scripts/`
+**CE(계약)** — `references/phase-input-curation.md` · `seam-discovery.md` · `governance.md`
+**HE(팀)** — `references/harness-engineering.md`(허브) · `execution-modes.md` · `skill-authoring.md`
+**검증** — `references/verification.md` · `skill-testing.md` · **`seam-qa.md`**(경계면 계약 대조)
+**운영** — `references/progress-and-hooks.md` · `re-execution.md`
+템플릿: `assets/` · 도구: `scripts/`
