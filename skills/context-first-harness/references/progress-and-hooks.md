@@ -28,7 +28,10 @@
 
 **동작:** SessionStart가 마커를 각인 → Stop이 "실질 파일 변경 있음 + PROGRESS 미갱신"이면 `decision:block`으로 Claude에게 갱신 요청. `stop_hook_active`로 무한루프 방지, 노이즈 디렉토리(.claude/_workspace/node_modules/.git) 제외.
 
-**주의:** 훅을 세션 중 처음 설치하면 감시자가 못 잡을 수 있다 — `/hooks`를 한 번 열거나 재시작하면 로드된다. 차단 훅이므로 팀 공유가 부담되면 `settings.local.json`(개인)에 둔다.
+**주의:** 훅을 세션 중 처음 설치하면 감시자가 못 잡을 수 있다 — `/hooks`를 한 번 열거나 재시작하면 로드된다. 차단 훅이므로 팀 공유가 부담되면 `settings.local.json`(개인)에 둔다. 이 훅은 `jq`가 없어도 동작한다(문자열 매칭 폴백).
+
+## (옵션) 제어 루프 — 실행 중 계약 준수 감시
+코드가 바뀌는 즉시 관련 seam 검사를 돌려 사실을 수집한다. `PROGRESS` 훅과 별개이며 함께 써도 된다. 스크립트 `scripts/seam-sensor-run.sh` + 설정 `assets/seam-sensors.template.json`. 상세: `references/control-loop.md`.
 
 **검증(설치 후):** raw 파이프 테스트 —
 ```

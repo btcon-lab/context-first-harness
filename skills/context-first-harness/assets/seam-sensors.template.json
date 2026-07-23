@@ -1,0 +1,47 @@
+{
+  "_comment": "Seam 센서 설정. 파일이 바뀌면 어떤 검사를 돌릴지 정의한다. 대상 프로젝트의 .claude/seam-sensors.json 에 둔다.",
+  "_주의": "여기 적은 command는 훅이 그대로 실행한다. 직접 작성한 명령만 넣는다.",
+  "_원칙": "센서는 측정만 한다. 결과가 '위반인가'는 판정하지 않는다 — 정본과 대조하는 판정은 Claude가 한다.",
+
+  "observation_dir": "_workspace/observations",
+
+  "sensors": [
+    {
+      "id": "api-contract",
+      "seam": "api",
+      "rules": ["API-P001", "API-P002"],
+      "match": ["src/api/**", "src/routes/**", "openapi.yaml"],
+      "command": "npm run --silent test:contract",
+      "measures": "API 응답 형식이 계약과 같은 모양인가",
+      "timeout": 120
+    },
+    {
+      "id": "job-status-transitions",
+      "seam": "job-status",
+      "rules": ["JOB-P010"],
+      "match": ["src/**/status*", "src/**/state*"],
+      "command": "npm run --silent test:transitions",
+      "measures": "상태 전이가 정본 전이 맵 안에 있는가",
+      "timeout": 120
+    },
+    {
+      "id": "type-check",
+      "seam": "data-model",
+      "rules": ["DM-P001"],
+      "match": ["**/*.ts", "**/*.tsx"],
+      "command": "npx tsc --noEmit",
+      "measures": "소비자 타입이 계약 스키마와 맞는가",
+      "timeout": 180
+    }
+  ],
+
+  "_필드": {
+    "id": "센서 식별자. 관측 리포트에 그대로 남는다",
+    "seam": "이 센서가 지켜보는 seam (docs/context/{seam}.md)",
+    "rules": "관련 Rule ID. 판정 시 어떤 규칙과 대조할지 알려준다",
+    "match": "이 경로가 바뀌면 센서를 돌린다. glob 패턴",
+    "command": "실행할 명령. 종료코드와 출력이 사실로 기록된다",
+    "measures": "이 센서가 '무엇을 재는지' 한 줄. 판정자가 맥락을 잡는 데 쓴다",
+    "timeout": "초. 넘기면 SENSOR_ERROR로 기록된다"
+  }
+}
