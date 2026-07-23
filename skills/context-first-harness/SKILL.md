@@ -74,6 +74,8 @@ HE와 CE를 연결한다.
 - **SoT 규칙**(같은 사실 한 곳, 정본을 읽어 참조·복제 금지)
 - **Context(seam) vs Design 경계**(무엇이 context, 무엇이 design)
 - **CE-우선 변경 프로토콜**(정본 먼저→통지→반영→검증→기록, Drift 시 정본이 진실)
+- **두 루프 분리 + 승인 게이트** — 구현 교정(V)은 자동, **정본 변경(G·S·D)은 사람 승인 필수**. 에이전트가 검증 결과만 보고 계약을 고치면 "구현에 맞춰 계약을 낮추는" 방향으로 흘러 정본이 코드의 사후 요약이 된다.
+- **규칙 등급**(MUST/SHOULD/등급 없음)과 Rule ID 부여 규칙
 - **변경 이력** 테이블
 상세: `references/governance.md`.
 
@@ -92,13 +94,15 @@ HE와 CE를 연결한다.
 실행 후 피드백 수집 → 유형별 반영(품질=스킬, 역할=에이전트, 순서=오케스트레이터, 계약=정본). 모든 변경은 CLAUDE.md/README 변경 이력에 기록. **CE-우선 원칙에 따라 계약 변경은 항상 정본부터.**
 - 재실행 판별(초기/부분/새/CE 재실행)·확장 시 Phase 선택·drift 감사: `references/re-execution.md`
 - **계약이 바뀌면 소비자 전원이 대상이다.** 한 명만 반영하면 그 자체가 경계면 버그다.
+- **정본 변경은 사람 승인을 거친다.** 규칙의 추가·완화·삭제는 자동 반영하지 않는다.
+- 실패한 태스크는 **매 회차 컨텍스트를 강화하며 최대 3회 재시도**, 소진 시 보류하고 사람에게 넘긴다: `references/execution-modes.md`
 
 ## 산출물 체크리스트
 - [ ] `docs/context/plan-extracts/` (입력 문서가 있을 때)
 - [ ] `docs/context/{seam}.md` 정본들 — **seam-only 배너 + [정본]/[TODO]/[OPEN] 표기**
 - [ ] **모든 계약 항목에 등급(MUST/SHOULD)과 Rule ID 부여**, 점진 이탈 감시 축 정의
 - [ ] `docs/context/{glossary,fr-index,open-decisions}.md`
-- [ ] `docs/context/README.md` — SoT + Context/Design 경계 + CE-우선 변경 프로토콜 + **오너십 맵** + 변경 이력
+- [ ] `docs/context/README.md` — SoT + Context/Design 경계 + CE-우선 변경 프로토콜 + **오너십 맵** + **승인 게이트** + 규칙 등급 + 변경 이력
 - [ ] `.claude/agents/*.md` — seam 소유자로 정의, 모두 `model: opus`, "재호출 시" 지침 포함
 - [ ] **모든 seam에 소유자 정확히 1명 + 소비자 1명 이상** (고아 정본·유령 seam 없음)
 - [ ] `.claude/skills/*/SKILL.md` — "컨텍스트 자산 참조" 포함, 오케스트레이터 1개
