@@ -84,6 +84,7 @@ HE와 CE를 연결한다.
 - `CLAUDE.md`에 하네스 포인터 + 컨텍스트 자산 포인터 + 변경 프로토콜 요약 등록(항상 로드).
 - 세션 간 기억이 필요하면 프로젝트 메모리에 시드.
 - (옵션) **Stop 훅**으로 PROGRESS 갱신 강제: `scripts/session-start-stamp.sh` + `scripts/progress-stop-check.sh` + `assets/settings-hooks.snippet.json`을 설치. 상세: `references/progress-and-hooks.md`.
+- (옵션) **제어 루프** — 코드가 바뀌면 관련 seam 검사를 자동 실행해 사실을 수집한다(`실행→관측→판정→교정`). `scripts/seam-sensor-run.sh` + `assets/seam-sensors.template.json`. **훅은 측정만 하고 판정은 정본과 대조해서 한다.** 상세: `references/control-loop.md`.
 
 ### Phase 8: 검증
 싼 것부터: 구조 → 정본 무결성 → 트리거 → 드라이런 → 실행 테스트 → **Seam QA**. 상세: `references/verification.md`.
@@ -114,6 +115,7 @@ HE와 CE를 연결한다.
 - [ ] `PROGRESS.md` — 내러티브+포인터
 - [ ] `CLAUDE.md` — 하네스·컨텍스트·변경 프로토콜 포인터
 - [ ] (옵션) Stop 훅 설치
+- [ ] (옵션) 제어 루프 설치 — `seam-sensors.json` 정의, 센서마다 `seam`·`rules` 지정
 - [ ] `.claude/commands/` — 아무것도 생성하지 않음
 - [ ] **P-B(Seam 발견)가 HE보다 먼저 수행됨**
 
@@ -121,5 +123,5 @@ HE와 CE를 연결한다.
 **CE(계약)** — `references/phase-input-curation.md` · `seam-discovery.md` · `governance.md`
 **HE(팀)** — `references/harness-engineering.md`(허브) · `execution-modes.md` · `skill-authoring.md`
 **검증** — `references/verification.md` · `skill-testing.md` · **`seam-qa.md`**(경계면 계약 대조)
-**운영** — `references/progress-and-hooks.md` · `re-execution.md`
+**운영** — `references/progress-and-hooks.md` · `re-execution.md` · `control-loop.md`(실행→관측→판정→교정)
 템플릿: `assets/` · 도구: `scripts/`

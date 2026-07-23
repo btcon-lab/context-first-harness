@@ -1,6 +1,20 @@
 {
-  "_comment": "P-F PROGRESS 갱신 강제 훅. 대상 프로젝트의 .claude/settings.local.json(개인) 또는 .claude/settings.json(팀 공유)에 hooks 블록을 병합한다. 스크립트는 대상의 .claude/hooks/로 복사하거나 플러그인 scripts/를 가리킨다. 아래는 대상 .claude/hooks/에 복사한 경우.",
+  "_comment": "훅 설정. 대상 프로젝트의 .claude/settings.local.json(개인) 또는 .claude/settings.json(팀 공유)에 hooks 블록을 병합한다. 스크립트는 대상의 .claude/hooks/로 복사한다. SessionStart+Stop은 PROGRESS 갱신 강제(P-F), PostToolUse는 제어 루프의 관측 층(control-loop.md).",
+  "_PostToolUse_주의": "seam-sensor-run.sh는 .claude/seam-sensors.json이 있을 때만 동작한다. 설정이 없으면 아무것도 하지 않으므로, 제어 루프를 쓰지 않을 거면 이 블록을 빼도 된다.",
   "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/seam-sensor-run.sh\"",
+            "timeout": 200,
+            "statusMessage": "seam 센서 실행"
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "hooks": [
