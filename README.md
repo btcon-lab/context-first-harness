@@ -25,7 +25,7 @@
 
 ## 설치
 ```
-/plugin marketplace add open2jang/context-first-harness
+/plugin marketplace add open2jang-bt/context-first-harness
 /plugin install context-first-harness@cfh-marketplace
 ```
 

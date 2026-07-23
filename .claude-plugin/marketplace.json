@@ -1,8 +1,8 @@
 {
   "name": "cfh-marketplace",
   "owner": {
-    "name": "open2jang",
-    "url": "https://github.com/open2jang"
+    "name": "open2jang-bt",
+    "url": "https://github.com/open2jang-bt"
   },
   "plugins": [
     {
