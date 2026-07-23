@@ -1,0 +1,28 @@
+{
+  "_comment": "P-F PROGRESS 갱신 강제 훅. 대상 프로젝트의 .claude/settings.local.json(개인) 또는 .claude/settings.json(팀 공유)에 hooks 블록을 병합한다. 스크립트는 대상의 .claude/hooks/로 복사하거나 플러그인 scripts/를 가리킨다. 아래는 대상 .claude/hooks/에 복사한 경우.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/session-start-stamp.sh\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/progress-stop-check.sh\"",
+            "timeout": 10,
+            "statusMessage": "PROGRESS.md 갱신 여부 확인"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,104 @@
+---
+name: context-first-harness
+description: "Context-First 하네스를 구성하는 메타 스킬. 도메인 설명이나 개발/계획 문서를 입력으로 (1) 컨텍스트 정본(seam 계약)을 먼저 만들고 (2) 그 seam의 소유자로 에이전트 팀(HE)을 구성하며 (3) 거버넌스(단일 진실원천 + CE-우선 변경 프로토콜)·진행관리(PROGRESS)·갱신 강제 훅까지 표준화한다. '하네스 구성/구축', 'context-first 하네스', 'CFHM', '컨텍스트 정본/seam 계약 만들기', '개발 계획서로 하네스', '하네스 표준화/확장/점검' 요청 시 사용. 단순 에이전트/스킬 하나만 필요하면 과할 수 있으니 규모를 먼저 판단."
+---
+
+# Context-First Harness (CFHM) — 메타 스킬
+
+도메인/프로젝트를 **컨텍스트 정본(seam) → 에이전트 팀(HE) → 거버넌스 → 진행관리**로 표준 변환한다. 핵심은 HE에서 멈추지 않고, 계약(seam)을 **먼저** 세운 뒤 그 위에 팀을 얹는 것이다.
+
+## 핵심 원칙 (왜 Context-First인가)
+1. **Context-First** — 계약(seam)이 기반, 에이전트는 그 위 일꾼. seam을 먼저 발견하고 에이전트를 seam **소유자**로 정의한다. 이 순서가 아니면 나중에 계약 재작업(seam 다이어트)이 반복된다.
+2. **Seam-only 정본** — `docs/context`는 2+ 소비자가 공유하는 인터페이스 사실만. 구현(how)은 `docs/design`이 갖고 계약을 **링크만** 한다(재기술 금지). 이것이 context↔design drift와 오버스펙을 막는다.
+3. **단일 진실원천 + CE-우선 변경** — 같은 사실은 한 곳에만. 수정은 **정본 먼저** → 통지 → 반영 → 검증 → 기록.
+4. **Progressive Disclosure** — 항상 로드(CLAUDE.md) → 트리거 시(스킬 본문) → 필요 시(references/·정본). 원문은 섹션 큐레이션 후 해당 조각만.
+5. **진화 + 규율** — PROGRESS·변경이력·메모리로 장기지평 관리, 훅으로 갱신 강제. 하네스는 고정물이 아니라 진화 시스템이다.
+
+## 워크플로우 (파이프라인)
+
+```
+Phase 0 현황 감사 → Phase 1 도메인 분석
+  → [P-A] 입력 큐레이션      원문→plan-extracts/ (읽기용)
+  → [P-B] Seam 발견          도메인 경계면 식별→계약 파일 set + 오너십
+  → [HE]  팀 구성            에이전트·스킬·오케스트레이터 (seam 소유자로)
+  → [P-C] 계약 시드          seam당 정본 1개, [TODO]/[OPEN] 시드
+  → [P-D] 배선               스킬↔context 포인터, references/, 오너십 확정
+  → [P-E] 거버넌스           context/README (SoT+경계+변경 프로토콜)
+  → [P-F] 진행·기억          PROGRESS·변경이력·memory·(옵션)Stop 훅
+  → Phase 8 검증 → Phase 9 진화
+```
+> HE와 CE는 상호의존이라 완전 선형은 아니다. **불변 규칙: P-B(Seam 발견)는 HE보다 앞선다.**
+
+### Phase 0: 현황 감사
+`대상프로젝트/.claude/agents`, `.claude/skills`, `docs/context/`, `CLAUDE.md`, `PROGRESS.md`를 읽는다. 분기: **신규 구축**(비어있음→전체) / **확장**(일부 Phase) / **운영·유지보수**(감사·동기화). 기존 자산과 CLAUDE.md 기록을 대조해 drift를 보고하고 실행 계획을 확인받는다.
+
+### Phase 1: 도메인 분석
+도메인/작업 유형 파악, 사용자 숙련도 감지(용어 조절), 기존 자산과의 충돌/중복 분석. 입력이 문서면 P-A로, 한 문장이면 P-B로.
+
+### P-A: 입력 큐레이션
+무거운 원문을 매번 컨텍스트에 넣지 않도록 한 번만 파싱→섹션 분리한다.
+- 스크립트 `scripts/split-source.py`로 `.docx`/`.md`를 `docs/context/plan-extracts/NN_*.md`로 분리(읽기용·"정본 아님" 배너).
+- 원문 수정이 없으면 재생성 불필요. 각 에이전트는 **자기 섹션만** 로드.
+- 상세: `references/phase-input-curation.md`.
+
+### P-B: Seam 발견 (HE보다 먼저)
+도메인의 **경계면(2+ 소비자가 공유하는 사실)**을 식별해 계약 파일 set과 오너십을 결정한다.
+- 판단 기준: "누가 무엇을 공유하는가?" 공유 사실 → seam(→context). 한 소유자의 구현 → design.
+- 웹 서비스면 대개: 용어 / 데이터모델 / API / 상태머신 / RBAC / 지표. 도메인이 다르면 seam도 다르다 — **고정 목록이 아니라 도출**한다.
+- 출력: seam 목록 + seam별 소유 에이전트(오너십 맵 초안).
+- 상세·도메인별 seam 카탈로그: `references/seam-discovery.md`.
+
+### HE: 팀 구성 (에이전트·스킬·오케스트레이터)
+seam 오너십을 바탕으로 팀을 만든다. **모든 에이전트는 `대상/.claude/agents/{name}.md` 파일로 정의**(빌트인 타입이라도), `model: "opus"`. 각 에이전트는 담당 seam의 소유자이자 하나의 스킬(들)을 쓴다.
+- 실행 모드는 에이전트 팀이 기본(2+ 협업). 패턴·정의 템플릿·오케스트레이터 템플릿: `references/harness-engineering.md`.
+- 오케스트레이터 스킬 1개가 팀을 조율하고, 완료 시 **정본을 채우고 design은 링크만** 하도록 명시한다.
+
+### P-C: 계약 시드 (CE, seam-only)
+P-B의 seam마다 `대상/docs/context/{seam}.md` 정본 1개를 만든다.
+- 입력(plan-extracts)에서 사실을 시드, 미정은 `[TODO]`, 착수 전 결정은 `[OPEN]`, 가정은 `[ASSUMPTION]`.
+- **seam-only 배너 필수.** 구현 상세는 넣지 말고 `docs/design`으로 이관 포인터를 남긴다.
+- 템플릿: `assets/seam-contract.template.md`, `assets/glossary.template.md`, `assets/fr-index.template.md`, `assets/open-decisions.template.md`.
+
+### P-D: 배선
+HE와 CE를 연결한다.
+- 각 스킬 본문에 "## 컨텍스트 자산 참조" 섹션 추가 — 소유/참조 정본을 명시(Read로 로드, 항상 로드 금지).
+- 대용량 외부지식은 스킬 `references/`로 분리(Progressive Disclosure).
+- 오너십 맵 확정: seam → 소유 에이전트 → 소비 에이전트.
+
+### P-E: 거버넌스
+`대상/docs/context/README.md`를 만든다(템플릿 `assets/context-README.template.md`). 담을 것:
+- **SoT 규칙**(같은 사실 한 곳, 정본을 읽어 참조·복제 금지)
+- **Context(seam) vs Design 경계**(무엇이 context, 무엇이 design)
+- **CE-우선 변경 프로토콜**(정본 먼저→통지→반영→검증→기록, Drift 시 정본이 진실)
+- **변경 이력** 테이블
+상세: `references/governance.md`.
+
+### P-F: 진행·기억
+- `대상/PROGRESS.md` 생성(템플릿 `assets/PROGRESS.template.md`): 현재상태·마일스톤·세션로그·다음할일. **내러티브+포인터만**, 상세는 권위 로그를 링크(변경이력·fr-index·open-decisions).
+- `CLAUDE.md`에 하네스 포인터 + 컨텍스트 자산 포인터 + 변경 프로토콜 요약 등록(항상 로드).
+- 세션 간 기억이 필요하면 프로젝트 메모리에 시드.
+- (옵션) **Stop 훅**으로 PROGRESS 갱신 강제: `scripts/session-start-stamp.sh` + `scripts/progress-stop-check.sh` + `assets/settings-hooks.snippet.json`을 설치. 상세: `references/progress-and-hooks.md`.
+
+### Phase 8: 검증
+구조 검증(파일 위치·frontmatter·커맨드 미생성), 정본 무결성(seam-only 배너, design 링크, drift 없음), 트리거 검증(should/should-NOT), 드라이런(데이터 흐름 dead link 없음). 상세: `references/verification.md`.
+
+### Phase 9: 진화
+실행 후 피드백 수집 → 유형별 반영(품질=스킬, 역할=에이전트, 순서=오케스트레이터, 계약=정본). 모든 변경은 CLAUDE.md/README 변경 이력에 기록. **CE-우선 원칙에 따라 계약 변경은 항상 정본부터.**
+
+## 산출물 체크리스트
+- [ ] `docs/context/plan-extracts/` (입력 문서가 있을 때)
+- [ ] `docs/context/{seam}.md` 정본들 — **seam-only 배너 + [정본]/[TODO]/[OPEN] 표기**
+- [ ] `docs/context/{glossary,fr-index,open-decisions}.md`
+- [ ] `docs/context/README.md` — SoT + Context/Design 경계 + CE-우선 변경 프로토콜 + 변경 이력
+- [ ] `.claude/agents/*.md` — seam 소유자로 정의, 모두 `model: opus`
+- [ ] `.claude/skills/*/SKILL.md` — "컨텍스트 자산 참조" 포함, 오케스트레이터 1개
+- [ ] `PROGRESS.md` — 내러티브+포인터
+- [ ] `CLAUDE.md` — 하네스·컨텍스트·변경 프로토콜 포인터
+- [ ] (옵션) Stop 훅 설치
+- [ ] `.claude/commands/` — 아무것도 생성하지 않음
+- [ ] **P-B(Seam 발견)가 HE보다 먼저 수행됨**
+
+## 참조
+- `references/phase-input-curation.md` · `references/seam-discovery.md` · `references/harness-engineering.md`
+- `references/governance.md` · `references/progress-and-hooks.md` · `references/verification.md`
+- 템플릿: `assets/` · 도구: `scripts/`

@@ -1,0 +1,5 @@
+.DS_Store
+*.log
+.in_use
+_workspace/
+_workspace_*/

@@ -1,0 +1,15 @@
+{
+  "name": "cfh-marketplace",
+  "owner": {
+    "name": "open2jang",
+    "url": "https://github.com/open2jang"
+  },
+  "plugins": [
+    {
+      "name": "context-first-harness",
+      "source": "./",
+      "description": "Context-First Harness (CFHM). 도메인 한 문장/문서를 컨텍스트 정본(seam) + 에이전트 팀 + 거버넌스 + 진행관리로 변환하는 메타 스킬. HE에서 멈추지 않고 CE·변경 프로토콜·PROGRESS까지 표준화.",
+      "version": "0.1.0"
+    }
+  ]
+}
