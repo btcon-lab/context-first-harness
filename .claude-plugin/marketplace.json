@@ -1,8 +1,8 @@
 {
   "name": "cfh-marketplace",
   "owner": {
-    "name": "open2jang-bt",
-    "url": "https://github.com/open2jang-bt"
+    "name": "btcon-lab",
+    "url": "https://github.com/btcon-lab"
   },
   "plugins": [
     {

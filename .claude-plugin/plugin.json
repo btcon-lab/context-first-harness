@@ -3,11 +3,11 @@
   "description": "Context-First Harness (CFHM) — a meta-skill that turns a domain description or planning document into a Context Engineering layer (canonical seam contracts) FIRST, then builds the agent team (HE) as owners of those seams, and finishes with governance (single-source-of-truth + contract-first change protocol), progress ledger, and update-enforcing hooks. Goes beyond harness-only plugins that stop at agents/skills. 도메인을 컨텍스트 정본(seam)→에이전트 팀→거버넌스·진행관리까지 표준화하는 메타 스킬.",
   "version": "0.1.0",
   "author": {
-    "name": "open2jang-bt",
-    "url": "https://github.com/open2jang-bt"
+    "name": "btcon-lab",
+    "url": "https://github.com/btcon-lab"
   },
-  "homepage": "https://github.com/open2jang-bt/context-first-harness",
-  "repository": "https://github.com/open2jang-bt/context-first-harness",
+  "homepage": "https://github.com/btcon-lab/context-first-harness",
+  "repository": "https://github.com/btcon-lab/context-first-harness",
   "license": "MIT",
   "keywords": [
     "context-engineering",
