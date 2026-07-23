@@ -29,6 +29,10 @@
 /plugin install context-first-harness@cfh-marketplace
 ```
 
+> **설치 후 새 세션이 필요하다.** 스킬은 세션 시작 시점에 로드되므로, 설치한 그 세션에서는 `context-first-harness` 스킬이 목록에 잡히지 않고 아래 "사용"의 자연어 트리거도 동작하지 않는다. Claude Code를 종료 후 다시 실행하거나 `/clear`로 새 세션을 연다.
+>
+> `/reload-plugins`는 플러그인 목록만 다시 읽는다. 이미 로드된 세션의 스킬 목록에는 반영되지 않을 수 있으므로, 설치 직후에는 새 세션을 여는 쪽이 확실하다.
+
 ## 사용
 Claude Code에서:
 ```
