@@ -2,7 +2,19 @@
 # Stop 훅(P-F): 이번 세션에 실질 작업(파일 변경)이 있었는데 PROGRESS.md가 갱신되지 않았으면
 # Claude에게 갱신을 요청(decision:block)한다. 한 번만 알리고(무한루프 방지) 정상 종료로 넘어간다.
 input=$(cat)
-active=$(printf '%s' "$input" | jq -r '.stop_hook_active // false' 2>/dev/null)
+
+# stop_hook_active 판별. jq가 있으면 쓰고, 없으면 문자열 매칭으로 대체한다.
+# 이 판별이 실패하면 차단이 반복될 수 있으므로 jq를 필수 의존성으로 두지 않는다.
+active=""
+if command -v jq >/dev/null 2>&1; then
+  active=$(printf '%s' "$input" | jq -r '.stop_hook_active // false' 2>/dev/null)
+fi
+if [ -z "$active" ] || [ "$active" = "null" ]; then
+  case "$input" in
+    *'"stop_hook_active"'*[Tt]rue*) active=true ;;
+    *) active=false ;;
+  esac
+fi
 [ "$active" = "true" ] && exit 0
 
 proj="${CLAUDE_PROJECT_DIR:-$PWD}"
