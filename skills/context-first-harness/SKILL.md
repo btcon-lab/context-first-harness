@@ -114,6 +114,7 @@ HE와 CE를 연결한다.
 - [ ] `.claude/skills/*/SKILL.md` — "컨텍스트 자산 참조" 포함, 오케스트레이터 1개
 - [ ] **QA 에이전트 존재** — `general-purpose`, seam 미소유, 계약 수정 권한 없음
 - [ ] 오케스트레이터에 **실행 모드 명시** + Phase 0 컨텍스트 확인 + description에 후속 작업 키워드
+- [ ] **오케스트레이터 Phase 0에 "연기된 운영 결정 확인" 배선** — 생성된 스킬 본문에 있어야 개발 단계 직접 호출 시 게이트가 돈다(reference에만 있으면 실패)
 - [ ] 트리거 검증 완료 — should / should-NOT(near-miss, 인접 seam 위주)
 - [ ] **Seam QA 1회 이상 수행** — 측정/판정 분리, 판정(V/G/S/D)·심각도(FAIL/WARN)·Rule ID 기록
 - [ ] `SENSOR_ERROR`로 남은 미측정 항목 없음 (통과로 처리하지 않았는가)
