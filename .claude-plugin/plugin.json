@@ -1,7 +1,7 @@
 {
   "name": "context-first-harness",
   "description": "Context-First Harness (CFHM) — a meta-skill that turns a domain description or planning document into a Context Engineering layer (canonical seam contracts) FIRST, then builds the agent team (HE) as owners of those seams, and finishes with governance (single-source-of-truth + contract-first change protocol), progress ledger, and update-enforcing hooks. Goes beyond harness-only plugins that stop at agents/skills. 계획서 한 부로 에이전트 팀을 꾸려주는데, 팀보다 약속(계약) 문서를 먼저 만듭니다. 여러 서비스가 같이 쓰는 경계면을 뽑아 기준 문서로 못박고, 그 주인으로 에이전트를 세웁니다. 코드와 문서가 어긋나면 문서가 정답입니다.",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "author": {
     "name": "btcon-lab",
     "url": "https://github.com/btcon-lab"

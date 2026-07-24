@@ -25,6 +25,16 @@
       "timeout": 120
     },
     {
+      "id": "rbac-matrix",
+      "seam": "rbac",
+      "rules": ["RBAC-P001"],
+      "match": ["src/auth/**", "src/middleware/**"],
+      "command": "",
+      "_todo": "권한 매트릭스 대조 명령 미정 — 구현자가 채운다. command가 비면 이 센서는 건너뛴다(SENSOR_ERROR 아님)",
+      "measures": "API 권한과 화면 권한이 rbac 정본과 일치하는가",
+      "timeout": 120
+    },
+    {
       "id": "type-check",
       "seam": "data-model",
       "rules": ["DM-P001"],
