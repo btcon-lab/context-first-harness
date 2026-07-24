@@ -84,7 +84,11 @@ HE와 CE를 연결한다.
 - `CLAUDE.md`에 하네스 포인터 + 컨텍스트 자산 포인터 + 변경 프로토콜 요약 등록(항상 로드).
 - 세션 간 기억이 필요하면 프로젝트 메모리에 시드.
 - (옵션) **Stop 훅**으로 PROGRESS 갱신 강제: `scripts/session-start-stamp.sh` + `scripts/progress-stop-check.sh` + `assets/settings-hooks.snippet.json`을 설치. 상세: `references/progress-and-hooks.md`.
-- (옵션) **제어 루프** — 코드가 바뀌면 관련 seam 검사를 자동 실행해 사실을 수집한다(`실행→관측→판정→교정`). `scripts/seam-sensor-run.sh` + `assets/seam-sensors.template.json`. **훅은 측정만 하고 판정은 정본과 대조해서 한다.** 상세: `references/control-loop.md`.
+- **제어 루프** — 코드가 바뀌면 관련 seam 검사를 자동 실행해 사실을 수집한다(`실행→관측→판정→교정`). `scripts/seam-sensor-run.sh` + `assets/seam-sensors.template.json`. **훅은 측정만 하고 판정은 정본과 대조해서 한다.** 상세: `references/control-loop.md`.
+  - **선택 기능이지만 스킵은 명시적 결정으로 남긴다.** "옵션"이라고 조용히 지나가지 않는다 — seam이 여럿이거나 장기 구현이면 이탈을 통합 시점에야 발견하게 되므로 제어 루프의 이득이 크다. 셋 중 하나로 결정하고 그 판단을 PROGRESS에 기록한다:
+    - **설치** — `seam-sensors.json` 정의(센서마다 `seam`·`rules`) + 훅 설치
+    - **연기** — 구현 착수 전이라 검사할 코드가 없으면, "구현 단계에서 설치"를 PROGRESS의 다음 할 일로 등재
+    - **생략** — seam이 적어 과하다고 판단하면, 그 사유를 PROGRESS에 한 줄 남긴다
 
 ### Phase 8: 검증
 싼 것부터: 구조 → 정본 무결성 → 트리거 → 드라이런 → 실행 테스트 → **Seam QA**. 상세: `references/verification.md`.
@@ -115,7 +119,7 @@ HE와 CE를 연결한다.
 - [ ] `PROGRESS.md` — 내러티브+포인터
 - [ ] `CLAUDE.md` — 하네스·컨텍스트·변경 프로토콜 포인터
 - [ ] (옵션) Stop 훅 설치
-- [ ] (옵션) 제어 루프 설치 — `seam-sensors.json` 정의, 센서마다 `seam`·`rules` 지정
+- [ ] **제어 루프 — 설치·연기·생략 중 하나로 결정하고 PROGRESS에 사유 기록** (옵션이지만 결정은 필수, 조용한 스킵 금지)
 - [ ] `.claude/commands/` — 아무것도 생성하지 않음
 - [ ] **P-B(Seam 발견)가 HE보다 먼저 수행됨**
 
