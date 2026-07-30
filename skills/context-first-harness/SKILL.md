@@ -68,6 +68,7 @@ HE와 CE를 연결한다.
 - 각 스킬 본문에 "## 컨텍스트 자산 참조" 섹션 추가 — 소유/참조 정본을 명시(Read로 로드, 항상 로드 금지).
 - 대용량 외부지식은 스킬 `references/`로 분리(Progressive Disclosure).
 - 오너십 맵 확정: seam → 소유 에이전트 → 소비 에이전트.
+- **참조 의존도 표기: "A가 B의 값을 인용"** — 소비 관계가 아닌 인용까지 잡아야 cross-통지가 안 새고, 정본↔정본 검증의 대상 목록이 된다.
 
 ### P-E: 거버넌스
 `대상/docs/context/README.md`를 만든다(템플릿 `assets/context-README.template.md`). 담을 것:
@@ -75,6 +76,7 @@ HE와 CE를 연결한다.
 - **Context(seam) vs Design 경계**(무엇이 context, 무엇이 design)
 - **CE-우선 변경 프로토콜**(정본 먼저→통지→반영→검증→기록, Drift 시 정본이 진실)
 - **두 루프 분리 + 승인 게이트** — 구현 교정(V)은 자동, **정본 변경(G·S·D)은 사람 승인 필수**. 에이전트가 검증 결과만 보고 계약을 고치면 "구현에 맞춰 계약을 낮추는" 방향으로 흘러 정본이 코드의 사후 요약이 된다.
+  - **세 갈래:** 자동(`[TODO]` 최초 기입·오타) / **파생**(승인된 결정·기존 MUST의 직접 귀결 → 자동 반영 + 근거 링크 + `파생-사후확인` 플래그) / 승인(신규 제약·모든 완화·애매하면). 파생은 근거를 못 대면 신규로 본다.
 - **규칙 등급**(MUST/SHOULD/등급 없음)과 Rule ID 부여 규칙
 - **변경 이력** 테이블
 상세: `references/governance.md`.
@@ -93,7 +95,7 @@ HE와 CE를 연결한다.
 ### Phase 8: 검증
 싼 것부터: 구조 → 정본 무결성 → 트리거 → 드라이런 → 실행 테스트 → **Seam QA**. 상세: `references/verification.md`.
 - 트리거·실행 테스트(with/without 비교, near-miss 작성): `references/skill-testing.md`
-- **Seam QA** — 정본을 assertion으로 전개해 구현과 대조한다. **측정(사실 수집)과 판정을 분리**하고, 불일치는 **V(구현 위반)/G(계약 공백)/S(정본 노후)/D(점진 이탈)로 판정**한다. 심각도는 규칙 등급에서 나온다(MUST 위반=FAIL, SHOULD 이탈=WARN). "다름"에서 멈추지 않는 것이 핵심: `references/seam-qa.md`
+- **Seam QA** — 정본을 assertion으로 전개해 대조한다. 두 모드: **정본↔정본**(코드 이전, 참조 의존 맵 순회, 대칭이라 주로 G 조기 검출)과 **정본↔구현**(코드 있을 때 동시 로드). **측정과 판정을 분리**하고, 불일치는 **V/G/S/D로 판정**, 심각도는 규칙 등급에서(MUST=FAIL, SHOULD=WARN). "다름"에서 멈추지 않는 것이 핵심: `references/seam-qa.md`
 
 ### Phase 9: 진화
 실행 후 피드백 수집 → 유형별 반영(품질=스킬, 역할=에이전트, 순서=오케스트레이터, 계약=정본). 모든 변경은 CLAUDE.md/README 변경 이력에 기록. **CE-우선 원칙에 따라 계약 변경은 항상 정본부터.**
@@ -108,7 +110,7 @@ HE와 CE를 연결한다.
 - [ ] `docs/context/{seam}.md` 정본들 — **seam-only 배너 + [정본]/[TODO]/[OPEN] 표기**
 - [ ] **모든 계약 항목에 등급(MUST/SHOULD)과 Rule ID 부여**, 점진 이탈 감시 축 정의
 - [ ] `docs/context/{glossary,fr-index,open-decisions}.md`
-- [ ] `docs/context/README.md` — SoT + Context/Design 경계 + CE-우선 변경 프로토콜 + **오너십 맵** + **승인 게이트** + 규칙 등급 + 변경 이력
+- [ ] `docs/context/README.md` — SoT + Context/Design 경계 + CE-우선 변경 프로토콜 + **오너십 맵 + 참조 의존 맵** + **승인 게이트(자동/파생/승인 세 갈래)** + 규칙 등급 + 변경 이력
 - [ ] `.claude/agents/*.md` — seam 소유자로 정의, 모두 `model: opus`, "재호출 시" 지침 포함
 - [ ] **모든 seam에 소유자 정확히 1명 + 소비자 1명 이상** (고아 정본·유령 seam 없음)
 - [ ] `.claude/skills/*/SKILL.md` — "컨텍스트 자산 참조" 포함, 오케스트레이터 1개
@@ -117,6 +119,7 @@ HE와 CE를 연결한다.
 - [ ] **오케스트레이터 Phase 0에 "연기된 운영 결정 확인" 배선** — 생성된 스킬 본문에 있어야 개발 단계 직접 호출 시 게이트가 돈다(reference에만 있으면 실패)
 - [ ] 트리거 검증 완료 — should / should-NOT(near-miss, 인접 seam 위주)
 - [ ] **Seam QA 1회 이상 수행** — 측정/판정 분리, 판정(V/G/S/D)·심각도(FAIL/WARN)·Rule ID 기록
+- [ ] **코드 이전이면 정본↔정본 검증 수행** — 참조 의존 맵 순회, 공백(G) 조기 검출 (전부 SKIP로 넘기지 않았는가)
 - [ ] `SENSOR_ERROR`로 남은 미측정 항목 없음 (통과로 처리하지 않았는가)
 - [ ] `PROGRESS.md` — 내러티브+포인터
 - [ ] `CLAUDE.md` — 하네스·컨텍스트·변경 프로토콜 포인터
