@@ -96,6 +96,7 @@ HE와 CE를 연결한다.
 싼 것부터: 구조 → 정본 무결성 → 트리거 → 드라이런 → 실행 테스트 → **Seam QA**. 상세: `references/verification.md`.
 - 트리거·실행 테스트(with/without 비교, near-miss 작성): `references/skill-testing.md`
 - **Seam QA** — 정본을 assertion으로 전개해 대조한다. 두 모드: **정본↔정본**(코드 이전, 참조 의존 맵 순회, 대칭이라 주로 G 조기 검출)과 **정본↔구현**(코드 있을 때 동시 로드). **측정과 판정을 분리**하고, 불일치는 **V/G/S/D로 판정**, 심각도는 규칙 등급에서(MUST=FAIL, SHOULD=WARN). "다름"에서 멈추지 않는 것이 핵심: `references/seam-qa.md`
+- **한계 — `FAIL 0` ≠ done.** Seam QA는 경계면 정합만 본다. 단일 소비자 내부 품질(스타일·빈상태·에러·접근성)은 **하네스 범위 밖**이다. 특히 seam 미소유 순수 소비자는 `SKIP`이 많고 `FAIL 0`이 뜨지만, 그건 계약 정합일 뿐 "완성"이 아니다. 하네스는 이 체크리스트를 소유하지 않고, **"별도 검증 필요"를 오너십 맵에 명시**하고 밖으로 넘긴다("하네스가 안 보는 영역을 done으로 읽지 마라" — `SENSOR_ERROR` 원칙의 상위판).
 
 ### Phase 9: 진화
 실행 후 피드백 수집 → 유형별 반영(품질=스킬, 역할=에이전트, 순서=오케스트레이터, 계약=정본). 모든 변경은 CLAUDE.md/README 변경 이력에 기록. **CE-우선 원칙에 따라 계약 변경은 항상 정본부터.**
@@ -111,6 +112,7 @@ HE와 CE를 연결한다.
 - [ ] **모든 계약 항목에 등급(MUST/SHOULD)과 Rule ID 부여**, 점진 이탈 감시 축 정의
 - [ ] `docs/context/{glossary,fr-index,open-decisions}.md`
 - [ ] `docs/context/README.md` — SoT + Context/Design 경계 + CE-우선 변경 프로토콜 + **오너십 맵 + 참조 의존 맵** + **승인 게이트(자동/파생/승인 세 갈래)** + 규칙 등급 + 변경 이력
+- [ ] **순수 소비자(seam 미소유)에 "완성도 하네스 밖 → 별도 검증 필요" 명시** — `FAIL 0`을 "완성"으로 보고하지 않았는가
 - [ ] `.claude/agents/*.md` — seam 소유자로 정의, 모두 `model: opus`, "재호출 시" 지침 포함
 - [ ] **모든 seam에 소유자 정확히 1명 + 소비자 1명 이상** (고아 정본·유령 seam 없음)
 - [ ] `.claude/skills/*/SKILL.md` — "컨텍스트 자산 참조" 포함, 오케스트레이터 1개
