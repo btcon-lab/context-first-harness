@@ -19,6 +19,7 @@ description: "Context-First 하네스를 구성하는 메타 스킬. 도메인 �
 ```
 Phase 0 현황 감사 → Phase 1 도메인 분석
   → [P-A] 입력 큐레이션      원문→plan-extracts/ (읽기용)
+  → [P-0] 목적·범위 정본     purpose.md (목적·in/out-of-scope·DoD)   ★ P-B보다 먼저
   → [P-B] Seam 발견          도메인 경계면 식별→계약 파일 set + 오너십
   → [HE]  팀 구성            에이전트·스킬·오케스트레이터 (seam 소유자로)
   → [P-C] 계약 시드          seam당 정본 1개, [TODO]/[OPEN] 시드
@@ -27,7 +28,7 @@ Phase 0 현황 감사 → Phase 1 도메인 분석
   → [P-F] 진행·기억          PROGRESS·변경이력·memory·(옵션)Stop 훅
   → Phase 8 검증 → Phase 9 진화
 ```
-> HE와 CE는 상호의존이라 완전 선형은 아니다. **불변 규칙: P-B(Seam 발견)는 HE보다 앞선다.**
+> HE와 CE는 상호의존이라 완전 선형은 아니다. **불변 규칙: P-0(목적·범위) → P-B(Seam 발견) → HE.** 무엇을 만들지 정해야 경계를 찾고, 경계를 찾아야 팀을 얹는다.
 
 ### Phase 0: 현황 감사
 `대상프로젝트/.claude/agents`, `.claude/skills`, `docs/context/`, `CLAUDE.md`, `PROGRESS.md`를 읽는다. 분기: **신규 구축**(비어있음→전체) / **확장**(일부 Phase) / **운영·유지보수**(감사·동기화). 기존 자산과 CLAUDE.md 기록을 대조해 drift를 보고하고 실행 계획을 확인받는다.
@@ -40,6 +41,13 @@ Phase 0 현황 감사 → Phase 1 도메인 분석
 - 스크립트 `scripts/split-source.py`로 `.docx`/`.md`를 `docs/context/plan-extracts/NN_*.md`로 분리(읽기용·"정본 아님" 배너).
 - 원문 수정이 없으면 재생성 불필요. 각 에이전트는 **자기 섹션만** 로드.
 - 상세: `references/phase-input-curation.md`.
+
+### P-0: 목적·범위 정본 (P-B보다 먼저)
+seam을 찾기 **전에** 목적·범위를 못 박는다 — 무엇을 만들지 정해야 어디에 경계가 있는지 찾는다. `대상/docs/context/purpose.md`를 만든다(템플릿 `assets/purpose.template.md`).
+- 담을 것: **목적 / in-scope / out-of-scope(구체 목록) / DoD / 교정 절차**.
+- **out-of-scope는 구체 목록으로** — "적당히"는 게이트가 대조 못 한다. 실제 산출물·계층·의존성 이름을 적는다.
+- **범위도 계약이다** — 모든 에이전트가 공유하는 최상위 사실. 소유=리드(사람), 오너십 맵에 **최우선 앵커**로 등재.
+- 왜 필요한가: 하네스는 경계는 지키나 **목적·범위는 안 지키고 오히려 부추긴다**. 이 앵커가 드리프트 방지 첫 방어선. 상세: `references/purpose-scope.md`.
 
 ### P-B: Seam 발견 (HE보다 먼저)
 도메인의 **경계면(2+ 소비자가 공유하는 사실)**을 식별해 계약 파일 set과 오너십을 결정한다.
@@ -104,10 +112,12 @@ HE와 CE를 연결한다.
 - **연기된 운영 결정 게이트** — P-F에서 "연기"로 남긴 결정(제어 루프 등)은 매 실행 Phase 0에서 PROGRESS의 "하네스 운영 결정"을 읽어 조건 충족 여부를 확인한다. 충족되면(예: 제어 루프 "M3 착수 시" ↔ 지금 구현 단계) 실행을 선행 작업으로 올린다. **조건 판정은 사람에게 확인받고, 정본에서 도출 가능한 것(seam·rules)은 자동 시드하되 `command`는 사람이 채운다** — command를 추측해 채우면 SENSOR_ERROR를 양산하는 "판단 없는 설치"가 된다: `references/execution-modes.md`·`control-loop.md`
 - **계약이 바뀌면 소비자 전원이 대상이다.** 한 명만 반영하면 그 자체가 경계면 버그다.
 - **정본 변경은 사람 승인을 거친다.** 규칙의 추가·완화·삭제는 자동 반영하지 않는다.
+- **목적·범위 게이트** — 하네스는 경계는 지키나 목적·범위는 안 지키고 오히려 부추긴다. 새 계층·의존성·산출물 종류가 "다음 할 일"에 오르면 `purpose.md`의 out-of-scope와 대조하고 **사람에게 확인**한다(판정은 사람). 드리프트가 이미 났으면 릴리스 대기 없이 **그 프로젝트에서 즉시 되감는다**(코드는 걷어내고 계약 변경·발견은 유지): `references/purpose-scope.md`
 - 실패한 태스크는 **매 회차 컨텍스트를 강화하며 최대 3회 재시도**, 소진 시 보류하고 사람에게 넘긴다: `references/execution-modes.md`
 
 ## 산출물 체크리스트
 - [ ] `docs/context/plan-extracts/` (입력 문서가 있을 때)
+- [ ] **`docs/context/purpose.md`** — 목적·in-scope·**out-of-scope(구체 목록)**·DoD, 오너십 맵에 최우선 앵커(소유=사람). **P-B보다 먼저.**
 - [ ] `docs/context/{seam}.md` 정본들 — **seam-only 배너 + [정본]/[TODO]/[OPEN] 표기**
 - [ ] **모든 계약 항목에 등급(MUST/SHOULD)과 Rule ID 부여**, 점진 이탈 감시 축 정의
 - [ ] `docs/context/{glossary,fr-index,open-decisions}.md`
@@ -119,6 +129,7 @@ HE와 CE를 연결한다.
 - [ ] **QA 에이전트 존재** — `general-purpose`, seam 미소유, 계약 수정 권한 없음
 - [ ] 오케스트레이터에 **실행 모드 명시** + Phase 0 컨텍스트 확인 + description에 후속 작업 키워드
 - [ ] **오케스트레이터 Phase 0에 "연기된 운영 결정 확인" 배선** — 생성된 스킬 본문에 있어야 개발 단계 직접 호출 시 게이트가 돈다(reference에만 있으면 실패)
+- [ ] **오케스트레이터 Phase 0에 "목적·범위 확인(확장 신호)" 배선** — 새 계층·의존성 추가 시 purpose와 대조, 사람 확인. 생성된 스킬 본문에 있어야 함
 - [ ] 트리거 검증 완료 — should / should-NOT(near-miss, 인접 seam 위주)
 - [ ] **Seam QA 1회 이상 수행** — 측정/판정 분리, 판정(V/G/S/D)·심각도(FAIL/WARN)·Rule ID 기록
 - [ ] **코드 이전이면 정본↔정본 검증 수행** — 참조 의존 맵 순회, 공백(G) 조기 검출 (전부 SKIP로 넘기지 않았는가)
@@ -128,9 +139,10 @@ HE와 CE를 연결한다.
 - [ ] (옵션) Stop 훅 설치
 - [ ] **제어 루프 — 설치·연기·생략 중 하나로 결정하고 PROGRESS에 사유 기록** (옵션이지만 결정은 필수, 조용한 스킵 금지)
 - [ ] `.claude/commands/` — 아무것도 생성하지 않음
-- [ ] **P-B(Seam 발견)가 HE보다 먼저 수행됨**
+- [ ] **P-0(목적·범위) → P-B(Seam 발견) → HE 순서 준수** (범위를 정하고 경계를 찾고 팀을 얹음)
 
 ## 참조
+**목적·범위** — `references/purpose-scope.md` (P-0, 범위 게이트, 되감기)
 **CE(계약)** — `references/phase-input-curation.md` · `seam-discovery.md` · `governance.md`
 **HE(팀)** — `references/harness-engineering.md`(허브) · `execution-modes.md` · `skill-authoring.md`
 **검증** — `references/verification.md` · `skill-testing.md` · **`seam-qa.md`**(경계면 계약 대조)
